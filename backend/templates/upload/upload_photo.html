@@ -1,0 +1,35 @@
+{% load static %}
+
+{% block style %}
+  <link href="{% static 'upload/css/images.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% comment %}
+  Шаблон для добавления фотографий.
+  Инклудится в любое место шаблонов Django.
+  Загружает фотографии в Minio через S3 по ключу:
+  'images/{object_app}/{format}/{object_id}/{django_id}'
+  где
+  object_app = data-app в <div id="upload-button"...
+  format = webp(оригинал в .webp) or core(сжатая до 300х300.webp), формируется на бэкенде
+  object_id = data-id в <div id="upload-button"...
+  django_id = UUID и выдаётся на бэкенде
+{% endcomment %}
+
+{% block body %}
+  {% csrf_token %}
+
+  <div id="add-image">
+    <input type="file" multiple accept="image/*" id="file-input" />
+
+    <div class="image-grid" id="image-grid">
+
+    </div>
+    <button id="upload-button" data-app="upload" data-id="1">Upload</button>
+  </div>
+
+{% endblock %}
+
+{% block script %}
+  <script src="{% static 'upload/js/images.js' %}"></script>
+{% endblock %}

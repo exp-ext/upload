@@ -1,0 +1,16 @@
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-gap: 10px;
+}
+
+.preview {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.grid-item {
+  width: 600px;
+  height: 300px;
+}
