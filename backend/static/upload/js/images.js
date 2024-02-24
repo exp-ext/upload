@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         const csrfToken = document.querySelector("input[name='csrfmiddlewaretoken']").value;
+        let uploadedCount = 0; 
 
         try {
             const response = await fetch('/upload/json/get-image-load-meta/', {
@@ -37,10 +38,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 for (const image_data of data.images_response) {
                     const file = getFileByJsId(image_data.js_id);
                     if (file) {
-                        await uploadFile(file, image_data, csrfToken);
+                        const uploadResult = await uploadFile(file, image_data, csrfToken);
+                        if (uploadResult) {
+                            uploadedCount++;
+                        }
                     }
                 }
             }
+
+            showPopup(uploadedCount);
+
         } catch (error) {
             console.error('Error:', error);
         }
@@ -72,11 +79,32 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 if (postResponse.status === 204) {
                     changeFileStatus(imageData.js_id);
+                    return true;
                 }
             }
         } catch (error) {
             console.error('Error in uploadFile:', error);
         }
+        return false;
+    }
+
+    function showPopup(uploadedFilesCount) {
+        const popup = document.createElement('div');
+        popup.style.position = 'fixed';
+        popup.style.top = '50%';
+        popup.style.left = '50%';
+        popup.style.transform = 'translate(-50%, -50%)';
+        popup.style.padding = '20px';
+        popup.style.background = '#fff';
+        popup.style.border = '1px solid #ccc';
+        popup.style.zIndex = '1000';
+        popup.innerText = `Успешно загружено картинок - ${uploadedFilesCount} шт`;
+
+        document.body.appendChild(popup);
+
+        setTimeout(() => {
+            document.body.removeChild(popup);
+        }, 3000);
     }
 
     function getImagesMeta() {
